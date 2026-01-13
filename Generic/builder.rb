@@ -5,7 +5,7 @@ module SimInfra
     def assert(condition, msg = nil); raise msg if !condition; end
 
     @@instructions = []
-    InstructionInfo= Struct.new(:name, :fields, :format, :code, :args, :asm)
+    InstructionInfo = Struct.new(:name, :fields, :format, :code, :args, :asm)
     class InstructionInfoBuilder
         def initialize(name, *args);
             @info = InstructionInfo.new(name)
@@ -16,7 +16,10 @@ module SimInfra
                 define_singleton_method(arg.name) { arg }
             end
         end
-        def encoding(format, fields); @info.fields = fields; @info.format = format; end
+        def encoding(format, fields)
+            @info.fields = fields
+            @info.format = format 
+        end
 
         def asm(&block)
             @info.asm = instance_eval(&block)
@@ -29,6 +32,31 @@ module SimInfra
         bldr = InstructionInfoBuilder.new(name, *args)
         bldr.instance_eval &block
         @@instructions << bldr.info
+        nil # only for debugging in IRB
+    end
+
+    Register = Struct.new(:name, :size, :attrs)
+
+    @@register_files = []
+    RegisterFileInfo = Struct.new(:name, :size, :registers)
+    class RegisterFileInfoBuilder
+        def initialize(name, size)
+            @info = RegisterFileInfo.new(name)
+            @info.size = size
+            @info.registers = []
+        end
+
+        def reg(name, *attrs)
+            @info.registers << Register.new(name, @info.size, attrs)
+        end
+
+        attr_reader :info
+    end
+
+    def RegisterFile(name, size, &block)
+        bldr = RegisterFileInfoBuilder.new(name, size)
+        bldr.instance_eval &block
+        @@register_files << bldr.info
         nil # only for debugging in IRB
     end
 end

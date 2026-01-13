@@ -6,7 +6,10 @@ module SimInfra
     def self.serialize(msg= nil)
         return @@instructions if Object.const_defined?(:IRB)
         require 'yaml'
-        yaml_data = YAML.dump(@@instructions.map(&:to_h))
+        yaml_data = YAML.dump({
+            intructions: @@instructions.map(&:to_h),
+            register_files: @@register_files.map(&:to_h),
+        })
 
         File.open("IR.yaml", "w") do |file|
             file.write(yaml_data)
@@ -14,7 +17,10 @@ module SimInfra
     end
 
     # reset state
-    def siminfra_reset_module_state; @@instructions = []; end
+    def siminfra_reset_module_state 
+      @@instructions = []
+      @@register_files = []
+    end
 
     # mixin for global counter, function returns 0,1,2,....
     module GlobalCounter
