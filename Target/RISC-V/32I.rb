@@ -52,4 +52,16 @@ module RV32I
         asm { "SUB #{rd}, #{rs1}, #{rs2}" }
         code { rd[]= rs1 - rs2 }
     }
+
+    Instruction(:ADDI, XReg(:rd), XReg(:rs1), Imm12(:imm)) {
+        encoding *format_i_alu(:addi, rd, rs1, imm)
+        asm { "ADDI #{rd}, #{rs1}, #{imm}" }
+        code { rd[]= rs1 + imm }
+    }
+
+    Instruction(:SLLI, XReg(:rd), XReg(:rs1), Imm5(:imm)) {
+        encoding *format_i_alu(:slli, rd, rs1, imm)
+        asm { "SLLI #{rd}, #{rs1}, #{imm}" }
+        code { rd[]= rs1 << imm }
+    }
 end
