@@ -35,6 +35,8 @@ module SimInfra
         def add(a, b); binOp(a, b, :add); end
         def sub(a, b); binOp(a, b, :sub); end
         def shl(a, b); binOp(a, b, :shl); end
+        def xor(a, b); binOp(a, b, :xor); end
+        # def zext(a, b); binOp(a, b, :zext); end
 
         private def tmpvar(type); var("_tmp#{next_counter}".to_sym, type); end
         # stmtadds statement into tree and retursoperand[0]

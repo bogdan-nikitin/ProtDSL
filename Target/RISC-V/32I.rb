@@ -1,5 +1,5 @@
 require_relative "encoding"
-require_relative "regfile"
+require_relative "operands"
 require_relative "../../Generic/base"
 
 module RV32I
@@ -56,7 +56,7 @@ module RV32I
     Instruction(:ADDI, XReg(:rd), XReg(:rs1), Imm12(:imm)) {
         encoding *format_i_alu(:addi, rd, rs1, imm)
         asm { "ADDI #{rd}, #{rs1}, #{imm}" }
-        code { rd[]= rs1 + imm }
+        code { rd[]= rs1 + i_imm }
     }
 
     Instruction(:SLLI, XReg(:rd), XReg(:rs1), Imm5(:imm)) {

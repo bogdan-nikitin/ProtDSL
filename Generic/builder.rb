@@ -35,6 +35,8 @@ module SimInfra
         nil # only for debugging in IRB
     end
 
+    Operand = Struct.new(:name, :kind, :attrs)
+
     Register = Struct.new(:name, :size, :attrs)
 
     @@register_files = []

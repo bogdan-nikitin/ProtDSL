@@ -1,17 +1,6 @@
 require_relative "../../Generic/base"
 
 module SimInfra
-    class Imm
-        attr_reader :name, :size
-        def initialize(name, size)
-            @name = name
-            @size = size
-        end
-    end
-
-    def Imm12(name) = Imm.new(name, 12)
-    def Imm5(name) = Imm.new(name, 5)
-
     def format_r(opcode, funct3, funct7, rd, rs1, rs2)
         return :R, [
             field(rd.name, 11, 7, :reg),
@@ -75,4 +64,11 @@ module SimInfra
         format_i(0b0010011, funct3, rd, rs1, imm12)
     end
 
+    class Scope 
+        def i_imm
+            mask = 1 << 31
+            # zext(imm, 32) ^ mask - mask
+            imm ^ mask - mask
+        end
+    end
 end
