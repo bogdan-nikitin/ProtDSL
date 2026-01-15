@@ -38,6 +38,10 @@ module RV32I
         reg :x29
         reg :x30
         reg :x31
+    }
+
+
+    RegisterFile(:Sys, 32) {
         reg :pc, :pc
     }
 
