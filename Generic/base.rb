@@ -1,4 +1,5 @@
 # Testing infra
+require 'pp'
 
 module SimInfra
     # @@instructions -array of instruction description
@@ -14,6 +15,10 @@ module SimInfra
         File.open("IR.yaml", "w") do |file|
             file.write(yaml_data)
         end
+    end
+
+    def self.dump
+        pp(@@instructions)
     end
 
     # reset state

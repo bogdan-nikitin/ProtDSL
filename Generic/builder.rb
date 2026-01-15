@@ -35,7 +35,18 @@ module SimInfra
         nil # only for debugging in IRB
     end
 
-    Operand = Struct.new(:name, :kind, :attrs)
+    class Operand
+        attr_reader :name, :kind, :attrs
+        def initialize(name, kind, attrs)
+            @name = name
+            @kind = kind
+            @attrs = attrs
+        end
+
+        def inspect
+            "Operand #{@name}:#{@kind} #{@attrs} (#{@scope.object_id})"
+        end
+    end
 
     Register = Struct.new(:name, :size, :attrs)
 
@@ -71,17 +82,14 @@ module SimInfra
             @info.code = scope = Scope.new(nil) # root scope
             @info.args.each do |arg|
                 scope.add_var(arg.name, :i32)
-                if [:rs1, :rs2].include?(arg.name)
-                    scope.stmt(:getreg, [arg.name, arg])
+                if arg.kind == :regclass
+                    scope.add_reg(arg)
+                elsif arg.kind == :operand
+                    scope.stmt(:init_imm, [scope.vars[arg.name], arg])
                 end
             end
 
             scope.instance_eval &block
-
-            dst_arg = @info.args.find { |a| a.name == :rd }
-            if dst_arg
-                scope.stmt(:setreg, [dst_arg, dst_arg.name])
-            end
         end
     end
 end

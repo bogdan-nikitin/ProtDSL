@@ -9,9 +9,15 @@ module SimInfra
         end
         # Syntax "var[]=value" is used to assign variable
         # it's similar to "var[hi:lo]=value" for partial assignment
-        def []=(other); @scope.stmt(:let, [self, other]); end
+        def []=(other)
+            @scope.stmt(:let, [self, other])
+            if @scope.regs.include? self.name
+                @scope.stmt(:setreg, [@scope.regs[self.name], self])
+            end
+        end
+
         # dumps states and disables @scope dump
-        def inspect; "#{@name}:#{@type} (#{@scope.object_id})"; end
+        def inspect; "Var #{@name}:#{@type} (#{@scope.object_id})"; end
     end
 end
 
@@ -20,11 +26,16 @@ module SimInfra
     class Constant
         attr_reader :scope, :name, :type, :value
         def initialize(scope, name, value);
-            @const = value; @scope = scope; @type = :iconst; @value = value
-            @scope.stmt(:new_const, [@const]);
+            @scope = scope
+            @name = name
+            @const = value
+            @type = :iconst
+            @scope.stmt(:new_const, [@const])
         end
         def let(other); raise "Assign to constant"; end
-        def inspect; "#{@name}:#{@type} (#{@scope.object_id}) {=#{@const}}"; end
+        def inspect
+            "Const #{@name}:#{@type} (#{@scope.object_id}) {=#{@const}}"
+        end
     end
     #
     class Var

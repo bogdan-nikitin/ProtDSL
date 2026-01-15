@@ -5,8 +5,8 @@ module SimInfra
     class Scope
 
         include GlobalCounter# used for temp variables IDs
-        attr_reader :tree, :vars, :parent
-        def initialize(parent); @tree = []; @vars = {}; end
+        attr_reader :tree, :vars, :parent, :regs
+        def initialize(parent); @tree = []; @vars = {}; @regs = {} end
         # resolve allows to convert Ruby Integer constants to Constant instance
 
         def var(name, type)
@@ -15,16 +15,24 @@ module SimInfra
             stmt :new_var, [@vars[name]] # returns @vars[name]
         end
 
-        def add_var(name, type); var(name, type); self; end
+        def reg(operand)
+            @regs[operand.name] = operand
+        end
 
-        def resolve_const(what)
+        def add_var(name, type); var(name, type); self; end
+        def add_reg(operand); reg(operand); self; end
+
+        def resolve_arg(what)
+            if (what.class == Var) and @regs.include? what.name 
+                stmt(:getreg, [what, @regs[what.name]])
+            end
             return what if (what.class== Var) or (what.class== Constant) # or other known classes
             return Constant.new(self, "const_#{next_counter}", what) if (what.class== Integer)
         end
 
         def binOp(a, b, op);
-            a = resolve_const(a)
-            b = resolve_const(b)
+            a = resolve_arg(a)
+            b = resolve_arg(b)
             # TODO: check constant size <= bitsize(var)
             # assert(a.type== b.type|| a.type == :iconst || b.type== :iconst)
 
