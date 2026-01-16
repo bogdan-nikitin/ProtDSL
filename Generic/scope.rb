@@ -24,7 +24,7 @@ module SimInfra
 
         def resolve_arg(what)
             if (what.class == Var) and @regs.include? what.name 
-                stmt(:getreg, [what, @regs[what.name]])
+                stmt :getreg, [what, @regs[what.name]]
             end
             return what if (what.class== Var) or (what.class== Constant) # or other known classes
             return Constant.new(self, "const_#{next_counter}", what) if (what.class== Integer)

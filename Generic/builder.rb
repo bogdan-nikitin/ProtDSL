@@ -37,7 +37,7 @@ module SimInfra
 
     class Operand
         attr_reader :name, :kind, :attrs
-        def initialize(name, kind, attrs)
+        def initialize(name, kind, *attrs)
             @name = name
             @kind = kind
             @attrs = attrs

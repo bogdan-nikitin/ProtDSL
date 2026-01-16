@@ -68,7 +68,7 @@ module SimInfra
         def i_imm
             mask = 1 << 31
             # zext(imm, 32) ^ mask - mask
-            imm ^ mask - mask
+            (imm ^ mask) - mask
         end
     end
 end

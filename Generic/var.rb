@@ -24,13 +24,13 @@ end
 module SimInfra
     # constant resolution (type check, initialization of constant type/value)
     class Constant
-        attr_reader :scope, :name, :type, :value
+        attr_reader :scope, :name, :type, :const
         def initialize(scope, name, value);
             @scope = scope
             @name = name
             @const = value
             @type = :iconst
-            @scope.stmt(:new_const, [@const])
+            @scope.stmt(:new_const, [self, @const])
         end
         def let(other); raise "Assign to constant"; end
         def inspect
