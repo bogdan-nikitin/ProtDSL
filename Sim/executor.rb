@@ -5,6 +5,8 @@ BIN_OPS = {
     sub: "-",
     xor: "^",
     shl: "<<",
+    and: "&",
+    or: "|",
 }
 
 module SimInfra
@@ -76,10 +78,22 @@ CPP
             "#{stmt.oprnds[0].name} = insn.operands[#{oprnds.index(stmt.oprnds[1])}];"
         elsif stmt.name == :getreg
             opd = stmt.oprnds[1]
-            "#{stmt.oprnds[0].name} = cpu_state.get_#{opd.attrs[0]}(insn.operands[#{oprnds.index(opd)}]);"
+            if opd.class == Operand
+                "#{stmt.oprnds[0].name} = cpu_state.get_#{opd.attrs[0]}(insn.operands[#{oprnds.index(opd)}]);"
+            elsif opd.class == Register
+                "#{stmt.oprnds[0].name} = cpu_state.get_#{opd.name}();"
+            end
         elsif stmt.name == :setreg
             opd = stmt.oprnds[0]
-            "cpu_state.set_#{opd.attrs[0]}(insn.operands[#{oprnds.index(opd)}], #{stmt.oprnds[0].name});"
+            if opd.class == Operand
+                "cpu_state.set_#{opd.attrs[0]}(insn.operands[#{oprnds.index(opd)}], #{stmt.oprnds[0].name});"
+            elsif opd.class == Register
+                "cpu_state.set_#{opd.name}(#{stmt.oprnds[0].name});"
+            end
+        elsif stmt.name == :eq
+            "#{stmt.oprnds[0].name} = static_cast<uint32_t>(#{stmt.oprnds[1].name} == #{stmt.oprnds[2].name});"
+        elsif stmt.name == :select
+            "#{stmt.oprnds[0].name} = #{stmt.oprnds[1].name} ? #{stmt.oprnds[2].name} : #{stmt.oprnds[3].name};"
         elsif BIN_OPS.include? stmt.name
             "#{stmt.oprnds[0].name} = #{stmt.oprnds[1].name} #{BIN_OPS[stmt.name]} #{stmt.oprnds[2].name};"
         end

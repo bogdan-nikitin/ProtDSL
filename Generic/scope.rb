@@ -44,6 +44,15 @@ module SimInfra
         def sub(a, b); binOp(a, b, :sub); end
         def shl(a, b); binOp(a, b, :shl); end
         def xor(a, b); binOp(a, b, :xor); end
+        def eq(a, b); binOp(a, b, :eq); end
+        def and(a, b); binOp(a, b, :and); end
+        def or(a, b); binOp(a, b, :or); end
+        def select(cond, a, b)
+            cond = resolve_arg(cond)
+            a = resolve_arg(a)
+            b = resolve_arg(b)
+            stmt :select, [tmpvar(a.type), cond, a, b]
+        end
         # def zext(a, b); binOp(a, b, :zext); end
 
         private def tmpvar(type); var("_tmp#{next_counter}".to_sym, type); end

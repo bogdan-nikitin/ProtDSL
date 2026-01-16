@@ -68,4 +68,10 @@ module RV32I
         asm { "SLLI #{rd}, #{rs1}, #{imm}" }
         code { rd[]= rs1 << imm }
     }
+
+    Instruction(:BEQ, XReg(:rs1), XReg(:rs2), Imm5(:imm), Imm7(:imm_hi)) {
+        encoding *format_b(:slli, rs1, rs2, imm, imm_hi)
+        asm { "BEQ #{rs1}, #{rs2}, #{imm}" }
+        code { pc[] = pc + select(rs1 == rs2, b_imm, 4) }
+    }
 end

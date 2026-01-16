@@ -76,6 +76,25 @@ end
 
 # * generate precise fields
 module SimInfra
+    private def dce(tree) 
+        used = Set[]
+        for stmt in tree
+            if stmt.name != :new_var
+                for opd in stmt.oprnds
+                    if opd.class == Var
+                        used << opd
+                    end
+                end
+            end
+        end
+        opt = []
+        for stmt in tree
+            next if stmt.name == :new_var and !used.include? stmt.oprnds[0]
+            opt << stmt
+        end
+        opt
+    end
+
     class InstructionInfoBuilder
     include SimInfra
         def code(&block)
@@ -88,8 +107,19 @@ module SimInfra
                     scope.stmt(:init_imm, [scope.vars[arg.name], arg])
                 end
             end
+            
+            @@register_files.each do |regfile|
+                regfile.registers.each do |reg|
+                    scope.add_var(reg.name, :i32)
+                    scope.add_reg(reg)
+                end
+            end
 
             scope.instance_eval &block
+            
+            opt = dce(scope.tree)
+            scope.tree.clear()
+            scope.tree.append(*opt)
         end
     end
 end

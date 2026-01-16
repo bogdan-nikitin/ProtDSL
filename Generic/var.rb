@@ -43,5 +43,8 @@ module SimInfra
         def-(other); @scope.sub(self, other); end
         def<<(other); @scope.shl(self, other); end
         def^(other); @scope.xor(self, other); end
+        def==(other); @scope.eq(self, other); end
+        def&(other); @scope.and(self, other); end
+        def|(other); @scope.or(self, other); end
     end
 end

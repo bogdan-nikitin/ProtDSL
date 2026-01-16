@@ -59,16 +59,42 @@ module SimInfra
     def format_i_mem(name, rd, rs1, imm12)
         funct3 =
         {
-            addi: 0,
+            lb: 0x0
         }[name]
         format_i(0b0010011, funct3, rd, rs1, imm12)
     end
 
+    def format_b(name, rs1, rs2, imm5, imm7)
+        funct3 =
+        {
+            beq: 0x0,
+        }[name]
+        return :B, [
+            field(imm7.name, 31, 25, :imm_hi),
+            field(rs1.name, 19, 15, :reg),
+            field(rs2.name, 24, 20, :reg),
+            field(imm5.name, 11, 7, :imm),
+            field(:opcode, 6, 0, 0b1100011),
+            field(:funct3, 14, 12, funct3),
+        ]
+    end
+
     class Scope 
         def i_imm
-            mask = 1 << 31
+            mask = 1 << (12 - 1)
             # zext(imm, 32) ^ mask - mask
             (imm ^ mask) - mask
+        end
+
+        def b_imm
+            mask = 1 << (13 - 1)
+            raw = (
+                ((imm & 1) << 11) | 
+                (imm & 0) | 
+                ((imm_hi & 0b111111) << 5) |
+                ((imm_hi & 0b1000000) << 12)
+            )
+            (raw ^ mask) - mask
         end
     end
 end
