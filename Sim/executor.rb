@@ -32,12 +32,17 @@ struct Executor {
 #{
 methods = []
 for insn in @@instructions
-    methods <<
+    sig = "void do_#{insn.name}(Instruction &insn)"
+    if insn.code.nil?
+        methods << "#{sig};\n".indent(8)
+    else
+        methods <<
 <<DEF
-    void do_#{insn.name}(Instruction &insn) {
-#{gen_body(insn).indent(8)}
+    #{sig} {
+    #{gen_body(insn).indent(8)}
     }
 DEF
+    end
 end
 methods.join "\n"
 }
