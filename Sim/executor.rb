@@ -47,7 +47,7 @@ for insn in @@instructions
         methods <<
 <<DEF
     #{sig} {
-    #{gen_body(insn).indent(8)}
+#{gen_body(insn).indent(8)}
     }
 DEF
     end
