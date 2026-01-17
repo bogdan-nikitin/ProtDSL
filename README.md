@@ -6,9 +6,13 @@
 
 **ProtDSL** is an educational sandbox project focused on creating a Domain-Specific Language (DSL) for describing Instruction Set Architecture (ISA) specifications. This prototype demonstrates a Ruby-based DSL for defining computer architectures.
 
-> **📝 Note: This repository is archived**
->
-> The code represents a minimal prototype and is preserved for educational purposes.
+## Build
+
+```bash
+cmake -B build
+cmake --build build
+.\build\sim
+```
 
 ## 🏗️ Project Structure
 

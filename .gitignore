@@ -56,4 +56,7 @@ build-iPhoneSimulator/
 # .rubocop-https?--*
 
 *.yaml
+*.exe
+*.out
+.cache/
 gen/

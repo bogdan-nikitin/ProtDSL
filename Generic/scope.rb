@@ -39,6 +39,11 @@ module SimInfra
             stmt op, [tmpvar(a.type), a, b]
         end
 
+        def unOp(a, op);
+            a = resolve_arg(a)
+            stmt op, [tmpvar(a.type), a]
+        end
+
         # redefine! add & sub will never be the same
         def add(a, b); binOp(a, b, :add); end
         def sub(a, b); binOp(a, b, :sub); end
@@ -54,6 +59,11 @@ module SimInfra
             stmt :select, [tmpvar(a.type), cond, a, b]
         end
         # def zext(a, b); binOp(a, b, :zext); end
+        
+        # memory
+        def load8(a); unOp(a, :load8); end
+        def load16(a); unOp(a, :load16); end
+        def load32(a); unOp(a, :load32); end
 
         private def tmpvar(type); var("_tmp#{next_counter}".to_sym, type); end
         # stmtadds statement into tree and retursoperand[0]

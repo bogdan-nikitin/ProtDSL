@@ -15,10 +15,16 @@ module SimInfra
 #pragma once
 #include "cpu_state.h"
 #include "instruction.h"
+#include "mem.h"
 
 
 struct Executor {
-    CpuState cpu_state;
+    CpuState &cpu_state;
+    Memory &memory;
+
+
+    Executor(CpuState &cpu_state, Memory &memory) : 
+        cpu_state{cpu_state}, memory{memory} {}
 
 #{
 methods = []

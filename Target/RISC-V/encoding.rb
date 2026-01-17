@@ -80,21 +80,24 @@ module SimInfra
     end
 
     class Scope 
+        def sext(value, size)
+            mask = 1 << (size - 1)
+            (value ^ mask) - mask
+        end
+
         def i_imm
-            mask = 1 << (12 - 1)
             # zext(imm, 32) ^ mask - mask
-            (imm ^ mask) - mask
+            sext(imm, 12)
         end
 
         def b_imm
-            mask = 1 << (13 - 1)
             raw = (
                 ((imm & 1) << 11) | 
                 (imm & 0) | 
                 ((imm_hi & 0b111111) << 5) |
                 ((imm_hi & 0b1000000) << 12)
             )
-            (raw ^ mask) - mask
+            sext(raw, 13)
         end
     end
 end

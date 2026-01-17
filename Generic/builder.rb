@@ -76,20 +76,23 @@ end
 
 # * generate precise fields
 module SimInfra
-    private def dce(tree) 
+    private def dce(scope) 
+        tree = scope.tree
         used = Set[]
         for stmt in tree
-            if stmt.name != :new_var
-                for opd in stmt.oprnds
-                    if opd.class == Var
-                        used << opd
-                    end
+            next if stmt.name == :new_var
+            for opd in stmt.oprnds
+                if opd.class == Var
+                    used << opd
                 end
             end
         end
         opt = []
         for stmt in tree
-            next if stmt.name == :new_var and !used.include? stmt.oprnds[0]
+            if stmt.name == :new_var and !used.include? stmt.oprnds[0]
+                scope.vars.delete(stmt.oprnds[0].name)
+                next
+            end
             opt << stmt
         end
         opt
@@ -117,7 +120,7 @@ module SimInfra
 
             scope.instance_eval &block
             
-            opt = dce(scope.tree)
+            opt = dce(scope)
             scope.tree.clear()
             scope.tree.append(*opt)
         end

@@ -74,4 +74,10 @@ module RV32I
         asm { "BEQ #{rs1}, #{rs2}, #{imm}" }
         code { pc[] = pc + select(rs1 == rs2, b_imm, 4) }
     }
+
+    Instruction(:LB, XReg(:rd), XReg(:rs1), Imm12(:imm)) {
+        encoding *format_i_mem(:lb, rd, rs1, imm)
+        asm { "LB #{rd}, #{rs1}, #{imm}" }
+        code { rd[] = sext(load8(rs1 + i_imm), 8) }
+    }
 end
