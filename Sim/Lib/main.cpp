@@ -17,16 +17,8 @@ int main(int argc, char** argv) {
         mem.load_executable(argv[1]); 
         CpuState cpu_state;
         Executor executor(cpu_state, mem);
-        const char* data = static_cast<char*>(mem.translate_address(mem.get_entry_point()));
-
-        for (int i = 0; i < 4; ++i) {
-            std::cout << std::hex << std::setw(2) << std::setfill('0')
-                      << (static_cast<unsigned>(static_cast<unsigned char>(data[3 - i])))
-                      << " ";
-        }
-
-        std::cout << std::dec << "\n";
-        executor.run();
+        int code = executor.run();
+        std::cout << "Exited with code " << code << "\n";
     } catch (const ElfError &err) {
         std::cerr << "Elf error: " << err.what() << "\n";
     } catch (const DecodeError &err) {

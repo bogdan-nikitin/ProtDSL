@@ -74,7 +74,6 @@ module SimInfra
         def self.init_children(sublist, node = 0, separ_mask = 0)
             lead_bits = get_lead_bits(sublist, separ_mask)
             msb, lsb = get_maj_range(lead_bits)
-            print sublist.map { |insn| insn.name }, "\n"
             width = msb - lsb + 1
             tree = DecoderTreeNode.new(msb, lsb, {})
             new_mask = separ_mask | ((1 << width) - 1 << lsb)

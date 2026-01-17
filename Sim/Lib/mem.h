@@ -15,8 +15,9 @@ class Memory {
     uint64_t base_address;
     using Address = uint32_t;
 
-    template <typename T> T read(Address address);
 public:
+    template <typename T> T read(Address address);
+    template <typename T> T write(T value, Address address);
     void load_executable(std::string_view path);
     Address get_entry_point();
     std::uint32_t read32(Address address);
@@ -28,4 +29,8 @@ public:
 
 template <typename T> inline T Memory::read(Address address) {
   return *reinterpret_cast<T *>(translate_address(address));
+}
+
+template <typename T> inline T Memory::write(T value, Address address) {
+  return *reinterpret_cast<T *>(translate_address(address)) = value;
 }
