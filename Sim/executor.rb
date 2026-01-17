@@ -16,11 +16,13 @@ module SimInfra
 #include "cpu_state.h"
 #include "instruction.h"
 #include "mem.h"
+#include "decoder.h"
 
 
 struct Executor {
     CpuState &cpu_state;
     Memory &memory;
+    Decoder decoder;
 
 
     Executor(CpuState &cpu_state, Memory &memory) : 
@@ -58,8 +60,27 @@ handlers.join "\n"
         (this->*handlers[insn.opcode])(insn);
     }
 
+    void run() {
+        while (true) {
+            uint32_t insn = memory.read32(cpu_state.get_#{get_pc().name}());
+            Instruction decoded = decoder.decode(insn);
+            execute(decoded);
+        }
+    }
+
 };
 CPP
+    end
+
+    private 
+    def self.get_pc()
+        for regfile in @@register_files
+            for reg in regfile.registers
+                if reg.attrs.include? :pc
+                    return reg
+                end
+            end
+        end
     end
 
     private

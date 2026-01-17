@@ -36,9 +36,12 @@ file(GLOB_RECURSE SIM_SOURCES
     ${CMAKE_SOURCE_DIR}/Sim/lib/*.cpp
 )
 
+file(GLOB_RECURSE SIM_SOURCES
+    ${CMAKE_SOURCE_DIR}/Sim/lib/*.cpp
+)
+
 add_executable(sim
     ${SIM_SOURCES}
-    ${GEN_SOURCES}
 )
 
 add_dependencies(sim generate)

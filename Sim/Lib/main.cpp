@@ -1,45 +1,39 @@
-#include <elfio/elfio.hpp>
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 #include "cpu_state.h"
 #include "executor.h"
 #include "mem.h"
 
 
 int main(int argc, char** argv) {
-    std::cout << "Hello\n";
+    std::cout << "Run sim\n";
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <riscv_elf>\n";
         return 1;
     }
 
-    ELFIO::elfio reader;
-
-    if (!reader.load(argv[1])) {
-        std::cerr << "Failed to load ELF file\n";
-        return 1;
-    }
-
-    const ELFIO::section* text = reader.sections[".text"];
-    if (!text) {
-        std::cerr << "No .text section found\n";
-        return 1;
-    }
-
-    const char* data = text->get_data();
     Memory mem;
-    std::cout << "Executable size: " << text->get_size() << "\n";
-    mem.load_executable(data, text->get_size()); 
-    CpuState cpu_state;
-    Executor executor(cpu_state, mem);
+    try {
+        mem.load_executable(argv[1]); 
+        CpuState cpu_state;
+        Executor executor(cpu_state, mem);
+        const char* data = static_cast<char*>(mem.translate_address(mem.get_entry_point()));
 
-    for (int i = 0; i < 4; ++i) {
-        std::cout << std::hex << std::setw(2) << std::setfill('0')
-                  << (static_cast<unsigned>(static_cast<unsigned char>(data[3 - i])))
-                  << " ";
+        for (int i = 0; i < 4; ++i) {
+            std::cout << std::hex << std::setw(2) << std::setfill('0')
+                      << (static_cast<unsigned>(static_cast<unsigned char>(data[3 - i])))
+                      << " ";
+        }
+
+        std::cout << std::dec << "\n";
+        executor.run();
+    } catch (const ElfError &err) {
+        std::cerr << "Elf error: " << err.what() << "\n";
+    } catch (const DecodeError &err) {
+        std::cerr << "Decoding error: " << err.what() << "\n";
+    } catch (const std::runtime_error &err) {
+        std::cerr << "Error during run: " << err.what() << "\n";
     }
-
-    std::cout << std::dec << "\n";
 
     return 0;
 }
