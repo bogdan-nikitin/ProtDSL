@@ -64,7 +64,7 @@ module RV32I
     }
 
     Instruction(:SLLI, XReg(:rd), XReg(:rs1), Imm5(:imm)) {
-        encoding *format_i_alu(:slli, rd, rs1, imm)
+        encoding *format_i_shift(:slli, rd, rs1, imm)
         asm { "SLLI #{rd}, #{rs1}, #{imm}" }
         code { rd[]= rs1 << imm }
     }

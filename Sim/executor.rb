@@ -52,7 +52,7 @@ for insn in @@instructions
         &Executor::do_#{insn.name},
 DEF
 end
-handlers.join "\n"
+handlers.join ""
 }
     };
 
@@ -61,6 +61,7 @@ handlers.join "\n"
     }
 
     void run() {
+        cpu_state.set_#{get_pc().name}(memory.get_entry_point());
         while (true) {
             uint32_t insn = memory.read32(cpu_state.get_#{get_pc().name}());
             Instruction decoded = decoder.decode(insn);

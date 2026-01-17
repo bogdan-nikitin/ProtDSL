@@ -34,7 +34,7 @@ module SimInfra
     def format_i_alu(name, rd, rs1, imm12)
         funct3 =
         {
-            addi: 0,
+            addi: 0x0,
         }[name]
         format_i(0b0010011, funct3, rd, rs1, imm12)
     end
@@ -45,7 +45,7 @@ module SimInfra
             slli: [0x1, 0x00],
             srli: [0x5, 0x00],
             srai: [0x5, 0x20]
-        }
+        }[name]
         return :I_shift, [
             field(rd.name, 11, 7, :reg),
             field(rs1.name, 19, 15, :reg),
@@ -61,7 +61,7 @@ module SimInfra
         {
             lb: 0x0
         }[name]
-        format_i(0b0010011, funct3, rd, rs1, imm12)
+        format_i(0b0000011, funct3, rd, rs1, imm12)
     end
 
     def format_b(name, rs1, rs2, imm5, imm7)
