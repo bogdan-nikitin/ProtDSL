@@ -43,12 +43,9 @@ module SimInfra
                     mask ^= mask & separ_mask
                     bits &= mask
                     values << bits
-                    # printf "%032b %032b\n" % [bits, mask]
                 end
                 lead_bits[rng] = values.size
             end
-            # print lead_bits
-            # print ranges
             lead_bits
         end
 
@@ -133,6 +130,7 @@ module SimInfra
             field = insn.fields.find do |field| field.name == opd.name end
             lines << "decoded.operands[#{i}] = slice(insn, #{field.from}, #{field.to});"
         end
+        lines << "return decoded;"
         lines.join "\n"
     end
 
@@ -146,7 +144,11 @@ module SimInfra
             cases << <<DEF
 case 0b#{format_binary(value, width)}:
 #{gen_decoder_node(subtree).indent(4)}
+#{
+<<BREAK if subtree.class == Decoder::DecoderTreeNode
     break;
+BREAK
+}
 DEF
         end
 <<DEF
@@ -158,7 +160,6 @@ DEF
 
     def self.gen_decoder
         tree = Decoder::make_head(@@instructions)
-        # pp_tree(tree)
 <<CPP
 #pragma once
 #include <stdexcept>

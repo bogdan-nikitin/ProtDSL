@@ -8,7 +8,7 @@ require_relative "Sim/executor"
 require_relative "Sim/opcode"
 require_relative "Sim/decoder"
 
-SimInfra.dump
+# SimInfra.dump
 SimInfra.serialize
 
 File.write('gen/cpu_state.h', SimInfra.gen_cpu_state)

@@ -1,4 +1,5 @@
 require_relative "util"
+require_relative "../Generic/shared"
 
 BIN_OPS = {
     add: "+",
@@ -73,23 +74,15 @@ handlers.join ""
 CPP
     end
 
-    private 
-    def self.get_pc()
-        for regfile in @@register_files
-            for reg in regfile.registers
-                if reg.attrs.include? :pc
-                    return reg
-                end
-            end
-        end
-    end
-
     private
     def self.gen_body(insn)
         body = []
         for stmt in insn.code.tree
             body << gen_stmt(stmt, insn.args)
-            # printf("%s\n", stmt)
+        end
+        if !change_pc?(insn)
+            pc = get_pc()
+            body << "cpu_state.set_#{pc.name}(cpu_state.get_#{pc.name}() + 4);"
         end
         body.join "\n"
     end
