@@ -25,16 +25,14 @@ module SimInfra
             sra: [0x5, 0x20],
             or: [0x6, 0x00],
             and: [0x7, 0x00],
-        }[name]
-        format_r(0b0110011, funct3, funct7, rd, rs1, rs2)
-    end
-
-    def format_r_mul(name, rd, rs1, rs2)
-        funct3, funct7 =
-        {
             mul: [0x0, 0x01],
+            mulh: [0x1, 0x01],
+            mulhsu: [0x2, 0x01],
+            mulhu: [0x3, 0x01],
             div: [0x4, 0x01],
+            divu: [0x5, 0x01],
             rem: [0x6, 0x01],
+            remu: [0x7, 0x01],
         }[name]
         format_r(0b0110011, funct3, funct7, rd, rs1, rs2)
     end

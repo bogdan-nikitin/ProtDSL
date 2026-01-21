@@ -84,7 +84,7 @@ module RV32I
     Instruction(:SRL, XReg(:rd), XReg(:rs1), XReg(:rs2)) {
         encoding *format_r_alu(:srl, rd, rs1, rs2)
         asm { "SRL #{rd}, #{rs1}, #{rs2}" }
-        code { rd[]= (rs1 >> (rs2 & 0x1f)) & 0xffffffff }
+        code { rd[]= rs1 >> (rs2 & 0x1f) }
     }
 
     Instruction(:SRA, XReg(:rd), XReg(:rs1), XReg(:rs2)) {
@@ -276,21 +276,33 @@ module RV32I
     }
 
     Instruction(:MUL, XReg(:rd), XReg(:rs1), XReg(:rs2)) {
-        encoding *format_r_mul(:mul, rd, rs1, rs2)
+        encoding *format_r_alu(:mul, rd, rs1, rs2)
         asm { "MUL #{rd}, #{rs1}, #{rs2}" }
         code { rd[]= (rs1 * rs2) & 0xffffffff }
     }
 
-    Instruction(:DIV, XReg(:rd), XReg(:rs1), XReg(:rs2)) {
-        encoding *format_r_mul(:div, rd, rs1, rs2)
-        asm { "DIV #{rd}, #{rs1}, #{rs2}" }
+    Instruction(:DIVU, XReg(:rd), XReg(:rs1), XReg(:rs2)) {
+        encoding *format_r_alu(:divu, rd, rs1, rs2)
+        asm { "DIVU #{rd}, #{rs1}, #{rs2}" }
         code { rd[]= rs1 / rs2 }
     }
 
-    Instruction(:REM, XReg(:rd), XReg(:rs1), XReg(:rs2)) {
-        encoding *format_r_mul(:rem, rd, rs1, rs2)
-        asm { "REM #{rd}, #{rs1}, #{rs2}" }
+    Instruction(:REMU, XReg(:rd), XReg(:rs1), XReg(:rs2)) {
+        encoding *format_r_alu(:remu, rd, rs1, rs2)
+        asm { "REMU #{rd}, #{rs1}, #{rs2}" }
         code { rd[]= rs1 % rs2 }
+    }
+
+    Instruction(:DIV, XReg(:rd), XReg(:rs1), XReg(:rs2)) {
+        encoding *format_r_alu(:div, rd, rs1, rs2)
+        asm { "DIV #{rd}, #{rs1}, #{rs2}" }
+        code { rd[]= divs(rs1, rs2) }
+    }
+
+    Instruction(:REM, XReg(:rd), XReg(:rs1), XReg(:rs2)) {
+        encoding *format_r_alu(:rem, rd, rs1, rs2)
+        asm { "REM #{rd}, #{rs1}, #{rs2}" }
+        code { rd[]= rems(rs1, rs2) }
     }
 
     Instruction(:ECALL) {

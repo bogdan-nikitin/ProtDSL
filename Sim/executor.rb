@@ -17,6 +17,11 @@ BIN_OPS = {
     mod: '%',
 }
 
+
+def signed_op(a, b, op)
+    "static_cast<uint32_t>(static_cast<int32_t>(#{a}) #{op} static_cast<int32_t>(#{b}))"
+end
+
 module SimInfra
     def self.gen_executor
 <<CPP
@@ -135,6 +140,10 @@ CPP
             "#{stmt.oprnds[0].name} = static_cast<uint32_t>(static_cast<int32_t>(#{stmt.oprnds[1].name}) == static_cast<int32_t>(#{stmt.oprnds[2].name}));"
         elsif name == :select
             "#{stmt.oprnds[0].name} = #{stmt.oprnds[1].name} ? #{stmt.oprnds[2].name} : #{stmt.oprnds[3].name};"
+        elsif name == :divs
+            "#{stmt.oprnds[0].name} = #{signed_op(stmt.oprnds[1].name, stmt.oprnds[2].name, '/')};"
+        elsif name == :rems
+            "#{stmt.oprnds[0].name} = #{signed_op(stmt.oprnds[1].name, stmt.oprnds[2].name, '%')};"
         elsif name.start_with? 'load'
             "#{stmt.oprnds[0].name} = memory.read<uint#{name[4, 2]}_t>(#{stmt.oprnds[1].name});"
         elsif name.start_with? 'store'

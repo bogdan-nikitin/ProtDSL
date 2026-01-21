@@ -59,6 +59,9 @@ module SimInfra
         def mul(a, b); binOp(a, b, :mul); end
         def div(a, b); binOp(a, b, :div); end
         def mod(a, b); binOp(a, b, :mod); end
+        def divs(a, b); binOp(a, b, :divs); end
+        def rems(a, b); binOp(a, b, :rems); end
+        def mod(a, b); binOp(a, b, :mod); end
         def select(cond, a, b)
             cond = resolve_arg(cond)
             a = resolve_arg(a)
