@@ -339,4 +339,10 @@ module RV32I
         encoding *format_sys(:ebreak)
         asm { "EBREAK" }
     }
+
+    Instruction(:FENCE, XReg(:rd), XReg(:rs1), Imm12(:imm)) {
+        encoding *format_i(0b000111, 0x1, rd, rs1, imm)
+        asm { "FENCE" }
+        code { }
+    }
 end
