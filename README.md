@@ -23,8 +23,6 @@ msg: .ascii "Hello\n"
 .global _start
 
 _start:
-    add x3,x5,x13
-    addi x3,x17,42
     li a7, 64        # syscall: write
     li a0, 1         # fd = 1 (stdout)
     la a1, msg       # buffer address

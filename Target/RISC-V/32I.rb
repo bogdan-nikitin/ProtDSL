@@ -305,6 +305,31 @@ module RV32I
         code { rd[]= rems(rs1, rs2) }
     }
 
+    Instruction(:MULHU, XReg(:rd), XReg(:rs1), XReg(:rs2)) {
+        encoding *format_r_alu(:mulhu, rd, rs1, rs2)
+        asm { "MULHU #{rd}, #{rs1}, #{rs2}" }
+        code { rd[]= mulhu(rs1, rs2) }
+    }
+
+    Instruction(:MULH, XReg(:rd), XReg(:rs1), XReg(:rs2)) {
+        encoding *format_r_alu(:mulh, rd, rs1, rs2)
+        asm { "MULH #{rd}, #{rs1}, #{rs2}" }
+        code { 
+            s1 = rs1 >> 31
+            s2 = rs2 >> 31
+            rd[]= mulhu(rs1, rs2) - s1 * rs2 - s2 * rs1
+        }
+    }
+
+    Instruction(:MULHSU, XReg(:rd), XReg(:rs1), XReg(:rs2)) {
+        encoding *format_r_alu(:mulhsu, rd, rs1, rs2)
+        asm { "MULHU #{rd}, #{rs1}, #{rs2}" }
+        code { 
+            s1 = rs1 >> 31
+            rd[]= mulhu(rs1, rs2) - s1 * rs2
+        }
+    }
+
     Instruction(:ECALL) {
         encoding *format_sys(:ecall)
         asm { "ECALL" }
