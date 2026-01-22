@@ -3,10 +3,17 @@
 #include <iostream>
 
 
+enum Syscall {
+    READ = 63,
+    WRITE = 64,
+    EXIT = 93,
+};
+
+
 void Executor::do_ECALL(Instruction &) {
     uint32_t syscall = cpu_state.get_x17();
     switch (syscall) {
-        case 64: { // write
+        case WRITE: {
             uint32_t fd     = cpu_state.get_x10();
             uint32_t buf    = cpu_state.get_x11();
             uint32_t count  = cpu_state.get_x12();
@@ -20,7 +27,7 @@ void Executor::do_ECALL(Instruction &) {
             cpu_state.set_x10(count);
             break;
         }
-        case 63: { // read
+        case READ: {
             uint32_t fd     = cpu_state.get_x10();
             uint32_t buf    = cpu_state.get_x11();
             uint32_t count  = cpu_state.get_x12();
@@ -38,7 +45,7 @@ void Executor::do_ECALL(Instruction &) {
             cpu_state.set_x10(read_bytes);
             break;
         }
-        case 93: { // exit
+        case EXIT: {
             uint32_t code = cpu_state.get_x10();
             throw ExitSignal{static_cast<int>(code)};
         }
