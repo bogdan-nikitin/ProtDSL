@@ -19,6 +19,7 @@ int main(int argc, char** argv) {
         Executor executor(cpu_state, mem);
         int code = executor.run();
         std::cout << "Exited with code " << code << "\n";
+        return EXIT_SUCCESS;
     } catch (const ElfError &err) {
         std::cerr << "Elf error: " << err.what() << "\n";
     } catch (const DecodeError &err) {
