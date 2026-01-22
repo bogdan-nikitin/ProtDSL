@@ -1,4 +1,4 @@
-#include <iomanip>
+#include <cstdlib>
 #include <iostream>
 #include "cpu_state.h"
 #include "executor.h"
@@ -6,14 +6,14 @@
 
 
 int main(int argc, char** argv) {
-    std::cout << "Run sim\n";
+    std::cout << "Run sim...\n";
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <riscv_elf>\n";
         return 1;
     }
 
-    Memory mem;
     try {
+        Memory mem;
         mem.load_executable(argv[1]); 
         CpuState cpu_state;
         Executor executor(cpu_state, mem);
@@ -27,5 +27,5 @@ int main(int argc, char** argv) {
         std::cerr << "Error during run: " << err.what() << "\n";
     }
 
-    return 0;
+    return EXIT_FAILURE;
 }
