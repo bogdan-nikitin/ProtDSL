@@ -82,6 +82,7 @@ handlers.join ""
     }
 
     int run() {
+        init();
         cpu_state.set_#{get_pc().name}(memory.get_entry_point());
         while (true) {
             uint32_t insn = memory.read32(cpu_state.get_#{get_pc().name}());
@@ -101,7 +102,6 @@ CPP
     private
     def self.gen_body(insn)
         body = []
-        body << "init();"
         for stmt in insn.code.tree
             body << gen_stmt(stmt, insn.args)
         end
