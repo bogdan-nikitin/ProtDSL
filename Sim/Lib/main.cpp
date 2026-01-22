@@ -6,11 +6,11 @@
 
 
 int main(int argc, char** argv) {
-    std::cout << "Run sim...\n";
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <riscv_elf>\n";
-        return 1;
+        return EXIT_FAILURE;
     }
+    std::cout << "Run sim...\n";
 
     try {
         Memory mem;
