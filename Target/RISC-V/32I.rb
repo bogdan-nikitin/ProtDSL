@@ -278,7 +278,7 @@ module RV32I
     Instruction(:MUL, XReg(:rd), XReg(:rs1), XReg(:rs2)) {
         encoding *format_r_alu(:mul, rd, rs1, rs2)
         asm { "MUL #{rd}, #{rs1}, #{rs2}" }
-        code { rd[]= (rs1 * rs2) & 0xffffffff }
+        code { rd[]= rs1 * rs2 }
     }
 
     Instruction(:DIVU, XReg(:rd), XReg(:rs1), XReg(:rs2)) {

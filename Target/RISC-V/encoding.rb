@@ -189,13 +189,13 @@ module SimInfra
         end
 
         def s_imm
-            raw = ((imm_hi & 0x7f) << 5) | (imm & 0x1f)
+            raw = (imm_hi << 5) | imm
             sext(raw, 12)
         end
 
 
         def u_imm
-            (imm & 0xfffff) << 12
+            imm << 12
         end
 
         def j_imm
