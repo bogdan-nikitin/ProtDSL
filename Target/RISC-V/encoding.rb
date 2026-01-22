@@ -200,10 +200,10 @@ module SimInfra
 
         def j_imm
             raw = 
-                ((imm & 0xff000) & 0xff000) | 
-                ((imm & 0x800) << 11) | 
-                ((imm & 0x7fe) << 1) | 
-                ((imm & 0x100000) >> 12)
+                ((imm & 0xff) << 12) |
+                ((imm & 0x100) << 3) |
+                ((imm & 0x7fe00) >> 8) |
+                ((imm & 0x80000) << 1)
             sext(raw, 21)
         end
     end
