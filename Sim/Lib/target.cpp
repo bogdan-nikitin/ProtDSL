@@ -17,14 +17,15 @@ void Executor::do_ECALL(Instruction &) {
             uint32_t fd     = cpu_state.get_x10();
             uint32_t buf    = cpu_state.get_x11();
             uint32_t count  = cpu_state.get_x12();
-            if (fd == 1) {
-                for (uint32_t i = 0; i < count; ++i) {
+            uint32_t i = 0;
+            if (fd == 1) { // stdout
+                for (; i < count; ++i) {
                     uint8_t c = memory.read<uint8_t>(buf + i);
                     std::cout.put(static_cast<char>(c));
                 }
                 std::cout.flush();
-            }
-            cpu_state.set_x10(count);
+            } 
+            cpu_state.set_x10(i);
             break;
         }
         case READ: {
@@ -39,7 +40,7 @@ void Executor::do_ECALL(Instruction &) {
                     int c = std::cin.get();
                     if (c == EOF) break;
                     memory.write<uint8_t>(static_cast<uint8_t>(c), buf + i);
-                    read_bytes++;
+                    ++read_bytes;
                 }
             } 
             cpu_state.set_x10(read_bytes);
