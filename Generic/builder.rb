@@ -1,4 +1,5 @@
 require_relative "scope"
+require 'set'
 
 # Basics
 module SimInfra
