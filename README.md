@@ -15,7 +15,7 @@ cmake --build build
 ## Run
 
 ```bash
-cat app.s
+cat examples/hello.s
 .section .data
 msg: .ascii "Hello\n"
 
@@ -32,9 +32,9 @@ _start:
     li a7, 93        # exit
     li a0, 0
     ecall
-riscv64-unknown-elf-g++ app.s -nostdlib -march=rv32im -mabi=ilp32
+riscv64-unknown-elf-g++ examples/hello.s -nostdlib -march=rv32im -mabi=ilp32
 .\build\sim a.out
-Run sim
+Run sim...
 Hello
 Exited with code 0
 ```

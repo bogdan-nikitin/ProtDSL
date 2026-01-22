@@ -42,6 +42,8 @@ struct Executor {
     Executor(CpuState &cpu_state, Memory &memory) : 
         cpu_state{cpu_state}, memory{memory} {}
 
+    void init();
+
 #{
 methods = []
 for insn in @@instructions
@@ -99,6 +101,7 @@ CPP
     private
     def self.gen_body(insn)
         body = []
+        body << "init();"
         for stmt in insn.code.tree
             body << gen_stmt(stmt, insn.args)
         end

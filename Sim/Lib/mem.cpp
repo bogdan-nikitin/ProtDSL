@@ -29,7 +29,7 @@ void Memory::load_executable(std::string_view path) {
         throw ElfError("No PT_LOAD segments");
     }
 
-    memory.resize(end - base);
+    memory.resize(end - base + STACK_SIZE);
     base_address = base;
     entry_point = reader.get_entry();
     for (const auto& seg : reader.segments) {
@@ -65,5 +65,9 @@ std::uint64_t Memory::address_space_offset() {
 
 Memory::Address Memory::get_entry_point() {
     return entry_point;
+}
+
+Memory::Address Memory::reverse_address(char *address) {
+    return reinterpret_cast<size_t>(address - address_space_offset());
 }
 

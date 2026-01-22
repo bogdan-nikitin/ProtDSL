@@ -1,6 +1,7 @@
 #include "executor.h"
 #include "syscall.h"
 #include <iostream>
+#include <string>
 
 
 enum Syscall {
@@ -8,6 +9,11 @@ enum Syscall {
     WRITE = 64,
     EXIT = 93,
 };
+
+
+void Executor::init() {
+    cpu_state.set_x2(memory.reverse_address(memory.end())); // stack pointer
+}
 
 
 void Executor::do_ECALL(Instruction &) {
@@ -33,7 +39,6 @@ void Executor::do_ECALL(Instruction &) {
             uint32_t buf    = cpu_state.get_x11();
             uint32_t count  = cpu_state.get_x12();
             uint32_t read_bytes = 0;
-            std::cout << fd << " " << buf << " " << count << "\n";
 
             if (fd == 0) { // stdin
                 for (uint32_t i = 0; i < count; ++i) {
@@ -51,7 +56,7 @@ void Executor::do_ECALL(Instruction &) {
             throw ExitSignal{static_cast<int>(code)};
         }
         default:
-            throw BadSyscall{"Unknown syscall"};
+            throw BadSyscall{"Unknown syscall " + std::to_string(syscall)};
     }
     cpu_state.set_pc(cpu_state.get_pc() + 4);
 }

@@ -10,6 +10,7 @@ class ElfError : public std::runtime_error {
 
 
 class Memory {
+    constexpr static const size_t STACK_SIZE = 1024 * 1024;
     std::vector<char> memory;
     uint32_t entry_point;
     uint64_t base_address;
@@ -22,6 +23,7 @@ public:
     Address get_entry_point();
     std::uint32_t read32(Address address);
     void *translate_address(Address address);
+    Address reverse_address(char *address);
     std::uint64_t address_space_offset();
     char *begin();
     char *end();
